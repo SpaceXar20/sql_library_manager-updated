@@ -1,11 +1,13 @@
+//this will be my main file
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var routes = require('./routes/index.js'); //require /routes/index.js
+var books = require('./routes/books'); // require /routes/books
 
 var app = express();
 
@@ -19,8 +21,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+//use the routes and books variables in a middleware function to pass in the routes
+app.use('/', routes); 
+console.log('app.js has received the index route');
+
+app.use('/books', books)
+console.log('app.js has received the books route');
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
