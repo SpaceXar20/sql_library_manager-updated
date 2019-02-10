@@ -7,14 +7,14 @@
 var app = require('../app');
 var debug = require('debug')('sql-library-manager-updated:server');
 var http = require('http');
-
+var sequelize = require("../models").sequelize;
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-
+console.log('Application running on port 3000')
 /**
  * Create HTTP server.
  */
@@ -25,9 +25,13 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+
+sequelize.sync().then(function () { //the sync method automatically creates or updates any database tables
+  server.listen(port);
+});
 server.on('error', onError);
 server.on('listening', onListening);
+
 
 /**
  * Normalize a port into a number, string, or false.
