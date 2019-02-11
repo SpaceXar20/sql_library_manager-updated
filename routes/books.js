@@ -35,17 +35,25 @@ router.post('/new', function(req, res, next) {
 });
 
 
-/*-Show books detail form
+/*Show books detail form, ** STUCK ON THIS PART!!***
 Create get /books/:id route */
 router.get('/:id', function(req, res, next) {
-  res.render('update-book.pug', {books: Book.build(), title: "Update Book"}) //most likely render the pug file for each books detail
-});
+  Book.findById(req.params.id).then(function(book){
+    res.render('update-book.pug', {book: book, title: "Update Book"}) //most likely render the pug file for each books detail
+    console.log(book)
+  })
+ });
 
 
 /* - Updates book info in the database.
 create the post /books/:id route */
-router.post('/books/:id', function(req, res, next) {
-  res.render('')
+router.put('/:id', function(req, res, next) {
+  Book.findById(req.params.id).then(function(book){
+    console.log(book)
+    return book.update(req.body);    
+  }).then(function(book) { //once the update() returns a promise , we can redirect to the individual book page
+    res.redirect("/books/" + book.id)   
+  });
 });
 
 
