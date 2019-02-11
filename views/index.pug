@@ -1,3 +1,6 @@
+//- dynamically create a table using "each" with the data passed in from using Book.findAll on books.js
+//-Note to self, In the pug files I need to specify the full routes
+//- ex:I need to write (/books/:id') in this file, but in book.js I can omit 'books' like (/:id')
 extends layout.pug
 
 block content
@@ -5,7 +8,7 @@ block content
     p
       a.button(href='/books/new') Create New Book
 
-    each book in books  
+    
       table
         thead
           tr
@@ -14,12 +17,14 @@ block content
             th Genre
             th Year
         tbody
-          tr
-            td
-              a(href= 'book_detail.html' + book.id) 
-            td= book.author
-            td= book.genre
-            td= book.year
-          tr
-            td
-           
+          //use each to dynamically create table
+          each book in books 
+            tr
+              td
+                a(href=' /books/:id' + book.id) #{book.title}
+              td= book.author
+              td= book.genre
+              td= book.year
+            tr
+              td
+            

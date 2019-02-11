@@ -9,9 +9,9 @@ const router = express.Router();
 var Book = require("../models").Book; //require book model into books.js route file
 
 
-// create get /books - Shows the full list of books. and catch error
+// create 'get /' - Shows the full list of books. and catch error
 router.get('/', function(req, res, next) { 
-  Book.findAll({order: [["Title", "ASC"]]}).then(function(books){ //use findAll method to grab data from the database, and order the books alphabetically by Title
+  Book.findAll({order: [["Title", "ASC"]]}).then(function(books){ //use findAll method to grab data from the database, and dynamically create a table using the data in index.pug
     //  console.log(books)
     res.render('index.pug', {books: books, title: "Books"}); //Render the index.pug file and pass it the books data from the function in order to create the tables
   }); 
@@ -19,23 +19,26 @@ router.get('/', function(req, res, next) {
 
 
 /*This route shows the new book form
-Create get/books/new route. */
-router.get('/books/new', function(req, res, next) {
+Create get/books/new route. 
+*** I noticed that /books/new didn't work but /new did*/
+router.get('/new', function(req, res, next) {
   res.render('new-book.pug', {books: Book.build(), title: "New Book"}); //most likely render new-book.pug
 });
 
 
 /*Post a new book to the database
 This makes the post /books/new route. */
-router.post('/books/new', function(req, res, next) {
-  res.render('') //most likely render update-books.pug
+router.post('/new', function(req, res, next) {
+  Book.create(req.body).then(function(book){ //to create a model, use create method, req.body is the data from the form
+    res.redirect("/books/" + book.id) //when the database is finished saving the new book record, the db will redirect to the new book 
+  });  
 });
 
 
-/*Show books detail form
+/*-Show books detail form
 Create get /books/:id route */
-router.get('/books/:id', function(req, res, next) {
-  res.render('update-book.pug') //most likely render the pug file for each books detail
+router.get('/:id', function(req, res, next) {
+  res.render('update-book.pug', {books: Book.build(), title: "Update Book"}) //most likely render the pug file for each books detail
 });
 
 
