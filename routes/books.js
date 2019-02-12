@@ -40,16 +40,16 @@ Create get /books/:id route */
 router.get('/:id', function(req, res, next) {
   Book.findById(req.params.id).then(function(book){
     res.render('update-book.pug', {book: book, title: "Update Book"}) //most likely render the pug file for each books detail
-    console.log(book)
+    // console.log(book)
   })
  });
 
 
-/* - Updates book info in the database.
+/* - Updates book info in the database.  ** STUCK ON THIS PART!!***
 create the post /books/:id route */
 router.put('/:id', function(req, res, next) {
   Book.findById(req.params.id).then(function(book){
-    console.log(book)
+    // console.log(book)
     return book.update(req.body);    
   }).then(function(book) { //once the update() returns a promise , we can redirect to the individual book page
     res.redirect("/books/" + book.id)   
@@ -61,8 +61,13 @@ router.put('/:id', function(req, res, next) {
 It can be helpful to create a new “test” book to test deleting.
 
 create the post /books/:id/delete route*/
-router.post('/books/:id/delete', function(req, res, next) {
-  res.render('')
+router.delete('/:id/delete', function(req, res, next) {
+  Book.findById(req.params.id).then(function(book){//once the book is found, we can destroy it
+    return book.destroy(); //the destroy() is an asynchronous call that returns a promise, once fulfilled we can redirect to /books path 
+  }).then(function(){
+  res.redirect('/books');
+  console.log(book)
+  });
 });
 
 

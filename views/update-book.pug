@@ -4,7 +4,7 @@ extends layout.pug
 block content
   h1= title
     //when the user clicks on the 'update book' book button, the action will redirect to the newly update book route
-    form(action="/books/" + book.id + "?_method=PUT", method="post")
+    form
         
       p
         label(for='title') Title
@@ -20,7 +20,7 @@ block content
         input#year(name='year', type='text', value='')
       p
         input(type='submit', value='Update Book')
-    form(method='post', action='/books/8/delete', onsubmit="return confirm('Do you really want to delete this book?');")
+    form(action="/books/" + "?_method=DELETE", method="post", onsubmit="return confirm('Do you really want to delete this book?');")
       p
         a.button(href='/') Cancel
       p
