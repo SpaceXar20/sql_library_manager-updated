@@ -1,0 +1,7 @@
+//This pug file will render a friendly message if the user tries to create a new book without name and title
+if(errors)
+  h2.error Ooops an error occured!
+  ul.error
+    each error in errors
+      li
+        =error.message

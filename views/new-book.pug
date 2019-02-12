@@ -4,6 +4,10 @@ extends layout.pug
 block content
   h1= title
   //in this form the `action` will send data to /books/new after user submits button to create a new book
+
+  //include errors pug file, this will prevent the creation of a new book without a title and author
+  include errors 
+
   form(action="/books/new", method="post")
     p
       label(for='title') Title

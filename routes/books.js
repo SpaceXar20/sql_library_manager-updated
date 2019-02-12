@@ -34,6 +34,16 @@ This makes the post /books/new route. */
 router.post('/new', function(req, res, next) {
   Book.create(req.body).then(function(book){ //to create a model, use create method, req.body is the data from the form
     res.redirect("/books/" + book.id) //when the database is finished saving the new book record, the db will redirect to the new book 
+  }).catch(function(err){
+    if(err.name === "SequelizeValidationError"){ //if error name is the sequelize type, re-render form if not throw err to be handler by final catch
+      res.render('new-book.pug', 
+        {book: Book.build(req.body), 
+         title: "New Book",
+         errors: err.errors //on error property, there is am errors array, we can pass that into view to ve rendered
+        });
+    } else {
+      throw err;
+    } 
   }).catch(function (err) {
     res.send(500);
   });  
@@ -59,10 +69,26 @@ router.get('/:id', function(req, res, next) {
 create the post /books/:id route */
 router.post('/:id', function(req, res, next) {
   Book.findOne({where: {id: req.params.id}}).then(function(book){
-    // console.log(book)
-    return book.update(req.body);    
+    if(book) {
+      return book.update(req.body);
+    } else {
+      res.send(404)
+    }    
   }).then(function(book) { //once the update() returns a promise , we can redirect to the individual book page
     res.redirect("/books/" + book.id)   
+  }).catch(function(err){
+    if(err.name === "SequelizeValidationError"){ //if error name is the sequelize type, re-render forms if not throw err to be handler by final catch
+      var book = Book.build(req.body); //when we build a book, we need to give correct id
+      book.id = req.params.id; //this will make sure the correct book gets updated
+
+      res.render('update-book.pug', 
+      {book: book, 
+       title: "Update Book",
+       errors: err.errors //on error property, there is am errors array, we can pass that into view to ve rendered
+      });
+    } else {
+      throw err;
+    } 
   }).catch(function (err) {
     res.send(500);
   });
@@ -75,8 +101,11 @@ It can be helpful to create a new “test” book to test deleting.
 create the post /books/:id/delete route*/
 router.post('/:id/delete', function(req, res, next){
   Book.findOne({where: {id: req.params.id}}).then(function(book){
-    console.log('The book should be deleted') 
-    return book.destroy();
+    if (book){ 
+      return book.destroy();
+    } else {
+      res.send(404)
+    }
   }).then(function(){
     res.redirect('/books/'); 
   }).catch(function (err) {

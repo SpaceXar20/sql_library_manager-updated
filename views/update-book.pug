@@ -4,6 +4,10 @@ extends layout.pug
 block content
   h1= title
     //when the user clicks on the 'update book' book button, the action will redirect to /books/
+
+    //include errors pug file, this will prevent the creation of a new book without a title and author
+    include errors
+
     form(action="/books/" + book.id , method="post")
       //dynamically included book values based on id by using book.
       p
@@ -20,7 +24,8 @@ block content
         input#year(name='year', type='text', value=book.year)
       p
         input(type='submit', value='Update Book')
-    form(action="/books/" + book.id, method="post", onsubmit="return confirm('Do you really want to delete this book?');")
+    // when user clicks on the delete button, add book.id and `/delete` to /books/,  Matt D rom the slack channel helped me on this section    
+    form(action="/books/" + book.id + '/delete', method="post", onsubmit="return confirm('Do you really want to delete this book?');")
       p
         a.button(href='/') Cancel
       p
