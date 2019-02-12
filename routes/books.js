@@ -63,10 +63,10 @@ It can be helpful to create a new “test” book to test deleting.
 create the post /books/:id/delete route*/
 router.delete('/:id/delete', function(req, res, next) {
   Book.findById(req.params.id).then(function(book){//once the book is found, we can destroy it
+    console.log(book)
     return book.destroy(); //the destroy() is an asynchronous call that returns a promise, once fulfilled we can redirect to /books path 
   }).then(function(){
   res.redirect('/books');
-  console.log(book)
   });
 });
 
