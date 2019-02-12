@@ -4,7 +4,7 @@ extends layout.pug
 block content
   h1= title
   //in this form the `action` will send data to /books/new after user submits button to create a new book
-  form(action="/books/new", method="post")
+  form(action="/books/", method="post")
     p
       label(for='title') Title
       input#title(name='title', type='text')

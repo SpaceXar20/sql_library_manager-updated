@@ -3,24 +3,24 @@ extends layout.pug
 
 block content
   h1= title
-    //when the user clicks on the 'update book' book button, the action will redirect to the newly update book route
-    form
-      //I tried to write book.id on the value= but that data is not getting passed, I get errors  
+    //when the user clicks on the 'update book' book button, the action will redirect to /books/
+    form(action="/books/" + book.id , method="post")
+      //dynamically included book values based on id by using book.
       p
         label(for='title') Title
-        input#title(name='title', type='text', value='')
+        input#title(name='title', type='text', value=book.title)
       p
         label(for='author') Author
-        input#author(name='author', type='text', value='')
+        input#author(name='author', type='text', value=book.author)
       p
         label(for='genre') Genre
-        input#genre(name='genre', type='text', value='')
+        input#genre(name='genre', type='text', value=book.genre)
       p
         label(for='year') Year
-        input#year(name='year', type='text', value='')
+        input#year(name='year', type='text', value=book.year)
       p
         input(type='submit', value='Update Book')
-    form(action="/books/" + "?_method=DELETE", method="post", onsubmit="return confirm('Do you really want to delete this book?');")
+    form(action="/books/" + book.id , method="post" onsubmit="return confirm('Do you really want to delete this book?');")
       p
         a.button(href='/') Cancel
       p

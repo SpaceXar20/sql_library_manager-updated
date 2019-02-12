@@ -35,20 +35,20 @@ router.post('/new', function(req, res, next) {
 });
 
 
-/*Show books detail form, ** STUCK ON THIS PART!!***
+/*Show books detail form, this route allows me to dynamically include book title,author,genre,year in the text fields 
 Create get /books/:id route */
 router.get('/:id', function(req, res, next) {
-  Book.findById(req.params.id).then(function(book){
+  Book.findOne({where: {id: req.params.id}}).then(function(book){
     res.render('update-book.pug', {book: book, title: "Update Book"}) //most likely render the pug file for each books detail
     // console.log(book)
   })
  });
 
 
-/* - Updates book info in the database.  ** STUCK ON THIS PART!!***
+/* - Updates book info in the database. 
 create the post /books/:id route */
-router.put('/:id', function(req, res, next) {
-  Book.findById(req.params.id).then(function(book){
+router.post('/:id', function(req, res, next) {
+  Book.findOne({where: {id: req.params.id}}).then(function(book){
     // console.log(book)
     return book.update(req.body);    
   }).then(function(book) { //once the update() returns a promise , we can redirect to the individual book page
@@ -61,14 +61,15 @@ router.put('/:id', function(req, res, next) {
 It can be helpful to create a new “test” book to test deleting.
 
 create the post /books/:id/delete route*/
-router.delete('/:id/delete', function(req, res, next) {
-  Book.findById(req.params.id).then(function(book){//once the book is found, we can destroy it
-    console.log(book)
-    return book.destroy(); //the destroy() is an asynchronous call that returns a promise, once fulfilled we can redirect to /books path 
+router.post('/:id/delete', function(req, res, next){
+  Book.findOne({where: {id: req.params.id}}).then(function(book){
+    return book.destroy();
   }).then(function(){
-  res.redirect('/books');
-  });
+    res.redirect('/books/');  
+  })
 });
+
+
 
 
 
