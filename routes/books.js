@@ -14,7 +14,9 @@ router.get('/', function(req, res, next) {
   Book.findAll({order: [["Title", "ASC"]]}).then(function(books){ //use findAll method to grab data from the database, and dynamically create a table using the data in index.pug
     //  console.log(books)
     res.render('index.pug', {books: books, title: "Books"}); //Render the index.pug file and pass it the books data from the function in order to create the tables
-  }); 
+  }).catch(function (err) {
+      res.send(500);
+  });
 }); 
 
 
@@ -26,11 +28,14 @@ router.get('/new', function(req, res, next) {
 });
 
 
+
 /*Post a new book to the database
 This makes the post /books/new route. */
 router.post('/new', function(req, res, next) {
   Book.create(req.body).then(function(book){ //to create a model, use create method, req.body is the data from the form
     res.redirect("/books/" + book.id) //when the database is finished saving the new book record, the db will redirect to the new book 
+  }).catch(function (err) {
+    res.send(500);
   });  
 });
 
@@ -39,10 +44,15 @@ router.post('/new', function(req, res, next) {
 Create get /books/:id route */
 router.get('/:id', function(req, res, next) {
   Book.findOne({where: {id: req.params.id}}).then(function(book){
-    res.render('update-book.pug', {book: book, title: "Update Book"}) //most likely render the pug file for each books detail
-    // console.log(book)
-  })
- });
+    if(book) { //if the book is present we can show its data, if not we send a 404 error
+      res.render('update-book.pug', {book: book, title: "Update Book"}) //most likely render the pug file for each books detail
+    } else {
+      res.send(404);
+    }
+  }).catch(function (err) {
+    res.send(500);
+  });
+});
 
 
 /* - Updates book info in the database. 
@@ -53,6 +63,8 @@ router.post('/:id', function(req, res, next) {
     return book.update(req.body);    
   }).then(function(book) { //once the update() returns a promise , we can redirect to the individual book page
     res.redirect("/books/" + book.id)   
+  }).catch(function (err) {
+    res.send(500);
   });
 });
 
@@ -63,10 +75,13 @@ It can be helpful to create a new “test” book to test deleting.
 create the post /books/:id/delete route*/
 router.post('/:id/delete', function(req, res, next){
   Book.findOne({where: {id: req.params.id}}).then(function(book){
+    console.log('The book should be deleted') 
     return book.destroy();
   }).then(function(){
-    res.redirect('/books/');  
-  })
+    res.redirect('/books/'); 
+  }).catch(function (err) {
+    res.send(500);
+  });
 });
 
 
